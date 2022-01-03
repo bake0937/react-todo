@@ -4,11 +4,15 @@ import "./styles.css";
 export const App = () => {
   const [todoText, setTodoText] = useState("");
 
-  const [incompleteTodos, setIncompleteTodos] = useState([
-    "あああああ",
-    "いいいいい"
-  ]);
-  const [completeTodos, setCompleteTodos] = useState(["ううううう"]);
+  // 実装初期は下記のようにuseStateの配列に初期値を入れて進める
+  // const [incompleteTodos, setIncompleteTodos] = useState([
+  //   "あああああ",
+  //   "いいいいい"
+  // ]);
+
+  // 実装がある程度できたら初期値を消す
+  const [incompleteTodos, setIncompleteTodos] = useState([]);
+  const [completeTodos, setCompleteTodos] = useState([]);
 
   // event.targett.value
   const onChangeTodoText = (event) => setTodoText(event.target.value);
@@ -32,6 +36,7 @@ export const App = () => {
   // 完了リストへ移動する
   const onClickComplete = (index) => {
     // 未完了リストから削除する
+    // 今のnewIncompleteTodosをコピーする
     const newIncompleteTodos = [...incompleteTodos];
     newIncompleteTodos.splice(index, 1);
     setIncompleteTodos(newIncompleteTodos);
@@ -39,6 +44,20 @@ export const App = () => {
     // 完了リストへ追加する
     const newCompleteTodos = [...completeTodos, incompleteTodos[index]];
     setCompleteTodos(newCompleteTodos);
+  };
+
+  // 未完了リストへ戻す
+  const onClickBack = (index) => {
+    // 完了リストから削除する
+    const newCompleteTodos = [...completeTodos];
+    newCompleteTodos.splice(index, 1);
+
+    // 未完了リストへ追加する
+    const newIncompleteTodos = [...incompleteTodos, completeTodos[index]];
+    // 完了リストを更新する
+    setCompleteTodos(newCompleteTodos);
+    // 未完了リストを更新する
+    setIncompleteTodos(newIncompleteTodos);
   };
 
   return (
@@ -72,7 +91,7 @@ export const App = () => {
             return (
               <div key={todo} className="list-row">
                 <li>{todo}</li>
-                <button>戻す</button>
+                <button onClick={() => onClickBack(index)}>戻す</button>
               </div>
             );
           })}
